@@ -11,7 +11,8 @@
 (function() {
     'use strict';
 
-    if (!/^https:\/\/www\.youtube\.com\/@[^\/]+(\/featured)?$/.test(window.location.href)) { //we want this to only work for youtube.com/@channel and .../@channel/featured, the latter is the uri which is returned when clicking "Home"
+    if (!/^https:\/\/www\.youtube\.com\/@[^\/]+(\/featured)?$/.test(window.location.href)) { //we want this to only work for youtube.com/@channel
+                                                                                             //and .../@channel/featured, the latter is the uri which is returned when clicking "Home"
         return;
     }
 
