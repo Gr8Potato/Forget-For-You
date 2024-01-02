@@ -3,6 +3,7 @@
 // @version      1.0
 // @description  Removes the "For You" feed whenever you view a YouTube channel.
 // @author       Gr8Potato
+// @namespace    https://github.com/Gr8Potato/Forget-For-You
 // @include      https://www.youtube.com/@*
 // @include      https://www.youtube.com/@*/featured
 // ==/UserScript==
