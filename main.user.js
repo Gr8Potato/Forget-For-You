@@ -11,25 +11,35 @@
 (function() {
     'use strict';
 
-    if (!/^https:\/\/www\.youtube\.com\/@[^\/]+(\/featured)?$/.test(window.location.href)) { //we want this to only work for youtube.com/@channel
-                                                                                             //and .../@channel/featured, the latter is the uri which is returned when clicking "Home"
+
+    if (!/^https:\/\/www\.youtube\.com\/@[^\/]+(\/featured)?$/.test(window.location.href)) {
         return;
     }
 
-    const removeSecondContentsDiv = function() {
+    const removeForYouContainer = function() {
         let contentsDivs = document.querySelectorAll('[id="contents"]');
-        contentsDivs[4].style.display = 'none'; // targets specific element in the DOM
+        contentsDivs.forEach(div => {
+            // Check if this container has a span with the text "For You"
+            if (div == contentsDivs[0]){return;}
+            let titleSpan = div.querySelector('span#title');
+            if (titleSpan && titleSpan.textContent.includes("For You")) {
+                div.style.display = 'none'; // Hide this container
+            }
+        });
     };
+    document.addEventListener('DOMContentLoaded', function() {
+        removeForYouContainer();
+    });
 
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             if (mutation.addedNodes.length) {
-                removeSecondContentsDiv();
+                removeForYouContainer();
             }
         });
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
 
-    removeSecondContentsDiv();
+    removeForYouContainer();
 })();
