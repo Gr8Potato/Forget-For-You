@@ -48,7 +48,7 @@
         }
     };
 
-    setInterval(handleUrlChange, 1000);
+    setInterval(handleUrlChange, 250);
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', startObserver);
