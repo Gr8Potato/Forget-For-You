@@ -1,35 +1,28 @@
 // ==UserScript==
 // @name         Forget For You
-// @version      1.0
+// @version      1.1
 // @description  Removes the "For You" feed whenever you view a YouTube channel.
 // @author       Gr8Potato
 // @namespace    https://github.com/Gr8Potato/Forget-For-You
-// @include      https://www.youtube.com/@*
-// @include      https://www.youtube.com/@*/featured
+// @match        https://www.youtube.com/*
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-
-    if (!/^https:\/\/www\.youtube\.com\/@[^\/]+(\/featured)?$/.test(window.location.href)) {
-        return;
-    }
+    const targetUrlPattern = /^https:\/\/www\.youtube\.com\/@[^\/]+(\/featured)?$/;
+    let lastUrl = location.href;
 
     const removeForYouContainer = function() {
         let contentsDivs = document.querySelectorAll('[id="contents"]');
         contentsDivs.forEach(div => {
-            // Check if this container has a span with the text "For You"
-            if (div == contentsDivs[0]){return;}
+            if (div === contentsDivs[0]){ return; }
             let titleSpan = div.querySelector('span#title');
             if (titleSpan && titleSpan.textContent.includes("For You")) {
                 div.style.display = 'none'; // Hide this container
             }
         });
     };
-    document.addEventListener('DOMContentLoaded', function() {
-        removeForYouContainer();
-    });
 
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
@@ -39,7 +32,28 @@
         });
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+    const startObserver = function() {
+        if (targetUrlPattern.test(window.location.href)) {
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    };
 
-    removeForYouContainer();
+    const handleUrlChange = function() {
+        const currentUrl = location.href;
+        if (currentUrl !== lastUrl) {
+            lastUrl = currentUrl;
+            if (targetUrlPattern.test(currentUrl)) {
+                window.location.reload();
+            }
+        }
+    };
+
+    setInterval(handleUrlChange, 1000);
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startObserver);
+    } else {
+        startObserver();
+    }
+
 })();
